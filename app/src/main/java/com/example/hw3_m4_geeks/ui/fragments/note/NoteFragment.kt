@@ -6,37 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.hw3_m4_geeks.R
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.hw3_m4_geeks.databinding.FragmentNoteBinding
+import com.example.noteapp.utils.PreferenceHelper
 
 class NoteFragment : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentNoteBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_note, container, false)
+        binding = FragmentNoteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            NoteFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpListeners()
+    }
+
+    private fun setUpListeners() = with(binding) {
+        val sharedPreferences = PreferenceHelper()
+        sharedPreferences.unit(requireContext())
+
     }
 }
