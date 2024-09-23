@@ -2,7 +2,8 @@ package com.example.noteapp
 
 import android.app.Application
 import androidx.room.Room
-import com.example.data.db.AppDatabase
+import com.example.noteapp.data.db.daos.AppDatabase
+import com.example.noteapp.utils.PreferenceHelper
 
 class App : Application() {
 
@@ -12,6 +13,8 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        val sharedPreferences = PreferenceHelper()
+        sharedPreferences.unit(this)
         getInstance()
     }
 
@@ -25,4 +28,3 @@ class App : Application() {
         return appDatabase
     }
 }
-

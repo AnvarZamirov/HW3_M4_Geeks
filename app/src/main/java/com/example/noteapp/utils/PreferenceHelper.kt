@@ -3,24 +3,20 @@ package com.example.noteapp.utils
 import android.content.Context
 import android.content.SharedPreferences
 
-class PreferenceHelper(context: Context) {
+class PreferenceHelper {
 
-    private var sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("shared", Context.MODE_PRIVATE)
+    private lateinit var sharedPreferences: SharedPreferences
 
     fun unit(context: Context) {
         sharedPreferences = context.getSharedPreferences("shared", Context.MODE_PRIVATE)
     }
 
-    fun setOnBoardingComplete(isComplete: Boolean) {
-        sharedPreferences.edit().putBoolean(SHOWED, isComplete).apply()
-    }
+    var isOnBoardShown: Boolean
+        get() = sharedPreferences.getBoolean("board", false)
+        set(value) = sharedPreferences.edit().putBoolean("board", value).apply()
 
-    fun isBoardingComplete(): Boolean {
-        return sharedPreferences.getBoolean(SHOWED, false)
-    }
+    var isRecyclerViewGrid: Boolean
+        get() = sharedPreferences.getBoolean("recyclerview", false)
+        set(value) = sharedPreferences.edit().putBoolean("recyclerview", value).apply()
 
-    companion object {
-        const val SHOWED = "SHOWED"
-    }
 }

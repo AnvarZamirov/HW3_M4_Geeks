@@ -1,11 +1,13 @@
-package com.example.data.db.daos
+package com.example.noteapp.data.db.daos
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.data.models.NoteModel
+import androidx.room.Update
+import com.example.noteapp.data.models.NoteModel
 
 @Dao
 interface NoteDao {
@@ -14,5 +16,15 @@ interface NoteDao {
     fun insertNote(noteModel: NoteModel)
 
     @Query("SELECT * FROM noteModel")
-    fun getAll(): LiveData<List<NoteModel >>
+    fun getAll(): LiveData<List<NoteModel>>
+
+    @Delete
+    fun deleteNote(noteModel: NoteModel)
+
+    @Query("SELECT * FROM noteModel WHERE id = :id")
+    fun getNoteById(id:Int): NoteModel?
+
+    @Update
+    fun updateNote(noteModel: NoteModel)
+
 }

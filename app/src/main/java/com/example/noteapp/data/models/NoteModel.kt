@@ -1,4 +1,4 @@
-package com.example.data.models
+package com.example.noteapp.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -9,7 +9,7 @@ data class NoteModel(
     val description: String,
     val date: String,
     val time: String,
-    val color: String
+    val color: Int
 
 ) {
     @PrimaryKey(autoGenerate = true)

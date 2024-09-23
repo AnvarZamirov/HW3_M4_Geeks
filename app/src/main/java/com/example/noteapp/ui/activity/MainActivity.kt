@@ -1,7 +1,10 @@
 package com.example.noteapp.ui.activity
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.noteapp.R
@@ -12,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    private lateinit var sharedPreferenceHelper: PreferenceHelper
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,15 +23,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_container)as NavHostFragment
-        navController= navHostFragment.navController
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        navController = navHostFragment.navController
 
-        sharedPreferenceHelper = PreferenceHelper(this@MainActivity)
-
-        if (!sharedPreferenceHelper.isBoardingComplete()) {
-            sharedPreferenceHelper.setOnBoardingComplete(true)
-        } else {
+        val sharedPreferences = PreferenceHelper()
+        sharedPreferences.unit(this)
+        if (sharedPreferences.isOnBoardShown) {
             navController.navigate(R.id.noteFragment)
+        } else if (!sharedPreferences.isOnBoardShown) {
+            navController.navigate(R.id.onBoardFragment)
         }
     }
 }

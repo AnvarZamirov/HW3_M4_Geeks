@@ -1,37 +1,70 @@
 package com.example.noteapp.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.data.models.NoteModel
+import com.example.noteapp.data.models.NoteModel
 import com.example.noteapp.databinding.ItemNoteBinding
+import com.example.noteapp.interfaces.OnClickItem
 
-class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
+class NoteAdapter(
+    private val onLongClick: OnClickItem,
+    private val onClick: OnClickItem
 
-    private var notesList = listOf<NoteModel>()
+) : ListAdapter<NoteModel, NoteAdapter.ViewHolder>(DiffCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val binding = ItemNoteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return NoteViewHolder(binding)
+    class ViewHolder(private val binding: ItemNoteBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun onBind(item: NoteModel) {
+            binding.itemTitle.text = item.title
+            binding.itemDescription.text = item.description
+            binding.itemDate.text = item.date
+            binding.itemTime.text = item.time
+
+            // Установка фона контейнера
+            val context = binding.root.context
+            Log.e("TAG", "onBind: ${item.color}", )
+            binding.containerNote.background = ContextCompat.getDrawable(context, item.color)
+
+            // Альтернатива: если нужно установить цвет через Color.parseColor()
+            // binding.containerNote.setBackgroundColor(Color.parseColor(item.color)) // предполагается, что item.color - строка с цветом
+        }
     }
 
-    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        holder.bind(notesList[position])
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            ItemNoteBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false
+            )
+        )
     }
 
-    override fun getItemCount(): Int = notesList.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.onBind(getItem(position))
 
-    fun submitList(list: List<NoteModel>) {
-        notesList = list
-        notifyDataSetChanged()
+        holder.itemView.setOnLongClickListener {
+            onLongClick.onLongClick(getItem(position))
+            true
+        }
+
+        holder.itemView.setOnClickListener {
+            onClick.onClick(getItem(position))
+        }
     }
 
-    class NoteViewHolder(private val binding: ItemNoteBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(note: NoteModel) {
-            binding.itemTitle.text = note.title
-            binding.itemDescription.text = note.description
-            binding.itemDate.text = note.date
-            binding.itemTime.text = note.time
+    class DiffCallback : DiffUtil.ItemCallback<NoteModel>() {
+        override fun areItemsTheSame(oldItem: NoteModel, newItem: NoteModel): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: NoteModel, newItem: NoteModel): Boolean {
+            return oldItem == newItem
         }
     }
 }
