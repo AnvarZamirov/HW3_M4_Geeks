@@ -53,7 +53,7 @@ class OnBoardFragment : Fragment() {
             }
         }
         binding.txtSkip.setOnClickListener {
-            findNavController().navigate(R.id.noteFragment)
+            findNavController().navigate(R.id.signUpFragment)
         }
     }
 }
